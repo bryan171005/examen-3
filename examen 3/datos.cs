@@ -5,13 +5,20 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Net.WebSockets;
+using Microsoft.IdentityModel.Protocols;
+using System.Configuration;
 namespace examen_3
 {
     class datos
     {
-        string cadenaConexion = "Data Source=BRYAN\\BRYANBD ;integrated security=true ;initial catalog=examen3;encrypt=false";
-        SqlConnection conexion = null;
+        string cadenaConexion;
+
+        public datos(string cadenaConexion)
+        {
+            cadenaConexion = ConfigurationManager.ConnectionStrings["Miconexion"].ConnectionString;
+        }
+
         private SqlConnection abrirConexion()
         {
             try
@@ -30,7 +37,7 @@ namespace examen_3
         {
             try
             {
-                conexion.Close();
+                
             }
             catch (Exception ex) { Console.WriteLine(ex.ToString()); }
 
