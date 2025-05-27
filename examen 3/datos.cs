@@ -8,45 +8,46 @@ using System.Threading.Tasks;
 using System.Net.WebSockets;
 using Microsoft.IdentityModel.Protocols;
 using System.Configuration;
+using System.Windows.Forms;
 namespace examen_3
 {
     class datos
     {
-        string cadenaConexion;
+        private string cadenaConexion;
+        private SqlConnection conexion;
 
-        public datos(string cadenaConexion)
+        public datos()
         {
-            cadenaConexion = ConfigurationManager.ConnectionStrings["Miconexion"].ConnectionString;
+
+            cadenaConexion = ConfigurationManager.ConnectionStrings["MiConexion"]?.ConnectionString;
+
+            if (cadenaConexion == null)
+            {
+                MessageBox.Show("Error al obtener la cadena de conexión desde el archivo de configuración.", "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
         }
 
-        private SqlConnection abrirConexion()
+        private SqlConnection AbrirConexion()
         {
-            try
-            {
-                SqlConnection conexion = new SqlConnection(cadenaConexion);
-                conexion.Open();
-                return conexion;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+            conexion = new SqlConnection(cadenaConexion);
+            conexion.Open();
+            return conexion;
         }
-        private void cerrarConexion()
-        {
-            try
-            {
-                
-            }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
 
+        private void CerrarConexion()
+        {
+            if (conexion != null && conexion.State == ConnectionState.Open)
+            {
+                conexion.Close();
+            }
         }
         public bool EjecutarComando(string cmd)
         {
             try
             {
-                SqlCommand comando = new SqlCommand(cmd, abrirConexion());
+                SqlCommand comando = new SqlCommand(cmd, AbrirConexion());
                 comando.ExecuteNonQuery();
                 return true;
             }
@@ -65,7 +66,7 @@ namespace examen_3
             DataSet ds = new DataSet();
             try
             {
-                SqlDataAdapter comando = new SqlDataAdapter(cmd, abrirConexion());
+                SqlDataAdapter comando = new SqlDataAdapter(cmd, AbrirConexion());
                 comando.Fill(ds);
                 return ds;
             }
@@ -79,6 +80,7 @@ namespace examen_3
                 // if (ds!= null)
                 //    cerrarConexion();
             }
+            //////////////}
         }
     }
 }

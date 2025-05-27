@@ -6,35 +6,39 @@ using System.Threading.Tasks;
 using System.Net.WebSockets;
 using System.Net;
 using System.Threading;
+using System.Configuration;
+using Fleck;
+using System.Windows.Forms;
 
 
 namespace examen_3
-{
-    class servidorwebsocket
+{   
+class servidorwebsocket
     {
-        public async Task iniciar()
-        {
-            HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:5000/ws/");
-            listener.Start();
-            Console.WriteLine("Servidor WebSocket escuchando en ws://localhost:5000/ws/");
-            while (true)
-            {
-                var contexto = await listener.GetContextAsync();
-                if (contexto.Request.IsWebSocketRequest)
-                {
-                    var vssocket = await contexto.AcceptWebSocketAsync(null);
-                    WebSocket socket = vssocket.WebSocket;
 
-                    byte[] buffer = new byte[1024];
-                    //var result = await socket.ReceiveAsync(new ArraySegment<byte> (buffer),);
-                }
-                else
+
+
+        private WebSocketServer servidor = new WebSocketServer("ws://0.0.0.0:8181");
+
+        public void iniciar()
+        {
+            servidor.Start(socket =>
+            {
+                socket.OnOpen =() =>
                 {
-                    contexto.Response.StatusCode = 400;
-                    contexto.Response.Close();
-                }
-            }
+                    MessageBox.Show("Cliente conectado: " + socket.ConnectionInfo.ClientIpAddress, "Conexión WebSocket", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                };
+                socket.OnClose =() =>
+                {
+                    MessageBox.Show("Cliente desconectado: " + socket.ConnectionInfo.ClientIpAddress, "Desconexión WebSocket", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                };
+                socket.OnMessage =message =>
+                {
+                    MessageBox.Show("Mensaje recibido: " + message, "Mensaje WebSocket", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    socket.Send("Mensaje recibido: " + message);
+                };
+            });
         }
     }
 }

@@ -52,7 +52,15 @@ namespace examen_3
             Actualizar();
         }
 
-        private void txtBusqueda_TextChanged(object sender, EventArgs e)
+        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            InsertarProducto insertarProducto = new InsertarProducto();
+            insertarProducto.ShowDialog();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
             DataSet ds;
             ds = dt.comandoDS("SELECT Id AS [ID Producto], " +
@@ -63,12 +71,6 @@ namespace examen_3
             {
                 dataGridView1.DataSource = ds.Tables[0];
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            InsertarProducto insertarProducto = new InsertarProducto();
-            insertarProducto.ShowDialog();
         }
     }
 }
