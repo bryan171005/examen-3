@@ -17,7 +17,7 @@ namespace examen_3
         {
             InitializeComponent();
         }
-        WebSocketMessage cliente;
+        
 
         private async void Form1_Load(object sender, EventArgs e)
         {

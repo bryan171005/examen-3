@@ -66,7 +66,7 @@ namespace examen_3
         {
             DataSet ds;
             ds = dt.comandoDS("SELECT Id AS [ID Producto], " +
-                              "Nombre, Descripcion, Precio, Cantidad, FechaRegistro " +
+                              "Nombre, Descripcion, Precio, Stock, FechaRegistro " +
                               "FROM Productos " +
                               "WHERE Nombre LIKE '" + textBox1.Text + "%'");
             if (ds != null)
