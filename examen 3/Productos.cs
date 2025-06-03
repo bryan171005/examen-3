@@ -16,13 +16,14 @@ namespace examen_3
         public Productos()
         {
             InitializeComponent();
+            datos.WebSocketClient.OnDataChanged += OnDataChangedFromWebSocket;
         }
         private void Actualizar()
         {
             DataSet ds;
             ds = dt.comandoDS("SELECT Id AS [ID Producto], " +
-                              "Nombre, Descripcion, Precio, Cantidad, FechaRegistro " +
-                              "FROM Productos");
+                              "Nombre, Descripcion, Precio, Stock, FechaRegistro " +
+                              "FROM Producto");
             if (ds != null)
             {
                 dataGridView1.DataSource = ds.Tables[0];
@@ -46,6 +47,7 @@ namespace examen_3
         private void Productos_Load(object sender, EventArgs e)
         {
             Actualizar();
+            
         }
         private void frmProductos_Activated(object sender, EventArgs e)
         {
@@ -64,13 +66,39 @@ namespace examen_3
         {
             DataSet ds;
             ds = dt.comandoDS("SELECT Id AS [ID Producto], " +
-                              "Nombre, Descripcion, Precio, Cantidad, FechaRegistro " +
+                              "Nombre, Descripcion, Precio, Stock, FechaRegistro " +
                               "FROM Productos " +
                               "WHERE Nombre LIKE '" + textBox1.Text + "%'");
             if (ds != null)
             {
                 dataGridView1.DataSource = ds.Tables[0];
             }
+        }
+        private void OnDataChangedFromWebSocket()
+        {
+            // Asegurar que la actualización se ejecute en el hilo de la UI
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(OnDataChangedFromWebSocket));
+                return;
+            }
+
+            // Actualizar los datos automáticamente
+            this.Actualizar();
+
+            // Mostrar una notificación visual
+            this.notificacion();
+        }
+
+        // Método para hacer parpadear la ventana cuando hay cambios
+        private void notificacion()
+        {
+            MessageBox.Show("DATOS ACTUALIZADOS");
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            datos.WebSocketClient.OnDataChanged -= OnDataChangedFromWebSocket;
+            base.OnFormClosed(e);
         }
     }
 }

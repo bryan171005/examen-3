@@ -36,11 +36,11 @@ namespace examen_3
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string sql = "UPDATE Productos SET " +
+            string sql = "UPDATE Producto SET " +
     "Nombre = '" + textnombre.Text + "', " +
     "Descripcion = '" + textdescripcion.Text + "', " +
     "Precio = '" + textprecio.Text + "', " +
-    "Cantidad = " + textcantidad.Text + ", " +
+    "Stock = " + textcantidad.Text + ", " +
     "FechaRegistro = '" +textfecha.Text + "' " +
     "WHERE Id = " + txtid.Text;
 
@@ -74,7 +74,7 @@ namespace examen_3
 
                 if (result == DialogResult.Yes)
                 {
-                    bool eliminado = dtos.EjecutarComando("DELETE FROM Productos WHERE Id = " + id);
+                    bool eliminado = dtos.EjecutarComando("DELETE FROM Producto WHERE Id = " + id);
 
                     if (eliminado)
                     {

@@ -28,7 +28,17 @@ namespace examen_3
 
 
         }
+        // Cliente WebSocket para notificaciones
+        private static ProductosWebSocketClient _webSocketClient;
 
+        static datos()
+        {
+            // Inicializar el cliente WebSocket (cambia la IP si el servidor está en otra máquina)
+            _webSocketClient = new ProductosWebSocketClient("ws://10.13.58.180:8090/");
+            _ = Task.Run(async () => await _webSocketClient.ConnectAsync());
+        }
+
+        public static ProductosWebSocketClient WebSocketClient => _webSocketClient;
         private SqlConnection AbrirConexion()
         {
             conexion = new SqlConnection(cadenaConexion);
@@ -47,9 +57,18 @@ namespace examen_3
         {
             try
             {
+                // Notificar cambios a través de WebSocket después de ejecutar el comando
+                _ = Task.Run(async () =>
+                {
+                    if (_webSocketClient?.IsConnected == true)
+                    {
+                        await _webSocketClient.NotifyDataChangedAsync();
+                    }
+                });
                 SqlCommand comando = new SqlCommand(cmd, AbrirConexion());
                 comando.ExecuteNonQuery();
                 return true;
+
             }
             catch (Exception ex)
             {

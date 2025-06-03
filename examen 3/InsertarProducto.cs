@@ -21,7 +21,7 @@ namespace examen_3
         private void button1_Click(object sender, EventArgs e)
         {
             // Insertar nuevo producto
-            string sql = "INSERT INTO Productos (Nombre, Descripcion, Precio, Cantidad, FechaRegistro) " +
+            string sql = "INSERT INTO Producto (Nombre, Descripcion, Precio, Stock, FechaRegistro) " +
                          "VALUES ('" + textnombre.Text + "', " +
                          "'" + textdescripcion.Text + "', " +
                          "'" + textprecio.Text + "', " +
